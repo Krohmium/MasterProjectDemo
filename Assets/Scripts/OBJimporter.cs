@@ -38,6 +38,8 @@ public class OBJimporter : MonoBehaviour
         loadedObject.transform.Rotate(new Vector3(90.0f, 180.0f, 0.0f));
 
         loadedObject.GetComponentInChildren<MeshRenderer>().material.shader = Shader.Find("Standard");
+        loadedObject.GetComponentInChildren<MeshRenderer>().material.SetFloat("_Glossiness", 0.0f);
+
 
         //Destroy(loadedObject.GetComponent<MeshRenderer>());
         //loadedObject.GetComponentInChildren<MeshRenderer>().material = "defaultMat"; 
