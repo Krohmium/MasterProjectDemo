@@ -14,6 +14,7 @@ public class OBJimporter : MonoBehaviour
 
     string error = string.Empty;
     GameObject loadedObject;
+    CapsuleCollider tempCollider;
     List<GameObject> loadedObjects = new List<GameObject>();
 
 
@@ -49,6 +50,10 @@ public class OBJimporter : MonoBehaviour
 
             loadedObject.GetComponentInChildren<MeshRenderer>().material.shader = Shader.Find("Standard");
             loadedObject.GetComponentInChildren<MeshRenderer>().material.SetFloat("_Glossiness", 0.0f);
+
+            tempCollider = loadedObject.transform.GetChild(0).gameObject.AddComponent<CapsuleCollider>();
+            //tempCollider.convex = true;
+            loadedObject.transform.GetChild(0).gameObject.AddComponent<Rigidbody>();
 
             if (counter > 5)
                 break;
