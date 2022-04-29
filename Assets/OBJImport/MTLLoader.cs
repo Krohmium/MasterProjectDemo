@@ -48,6 +48,27 @@ public class MTLLoader {
 
                 return tex;
             }
+            // Paul Hoefler ADDED CODE
+            else
+            {
+                Debug.Log("Trying to fix broken NHM texture path. original:");
+                string[] splitFilePath = filePath.Split(".");
+                string newFilePath = splitFilePath[0] + "_bearb." + splitFilePath[1]; 
+                
+                if (File.Exists(newFilePath))
+                {
+                    Debug.Log("Fixed broken NHM by appending \"_bearb\" before file extension.");
+                    var tex = ImageLoader.LoadTexture(newFilePath);
+
+                    if (isNormalMap)
+                        tex = ImageUtils.ConvertToNormalMap(tex);
+
+                    return tex;
+                }
+                else
+                    Debug.Log("Failed fixing broken NHM by appending \"_bearb\" before file extension.");
+            }
+            // END ADDED CODE Paul Hoefler 
         }
 
         //not found
@@ -186,6 +207,20 @@ public class MTLLoader {
                 {
                     continue; //invalid args or sth
                 }
+
+                // Paul Hoefler ADDED CODE
+
+                string[] splitTexturePath = texturePath.Split("\\");
+                
+                if(splitTexturePath[0] == "F:")
+                {
+                    Debug.Log("Fixed broken NHM .mtl by changing absolute path into relative path.");
+                    texturePath = splitTexturePath[^1];
+                }
+
+
+                // END ADDED CODE Paul Hoefler 
+
 
                 var KdTexture = TryLoadTexture(texturePath);
                 currentMaterial.SetTexture("_MainTex", KdTexture);

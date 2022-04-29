@@ -30,8 +30,10 @@ public class OBJimporter : MonoBehaviour
 
         foreach (string directory in System.IO.Directory.GetDirectories("C:\\Users\\Krohm\\Documents\\Uni\\Masterarbeit\\NHMV Models\\temp\\obj\\"))
         {
-            counter++;
-            foreach(string file in System.IO.Directory.GetFiles(directory))
+            if (counter > 8)
+                break;
+
+            foreach (string file in System.IO.Directory.GetFiles(directory))
             {
                 extension = file.Split(".")[1];
 
@@ -45,22 +47,28 @@ public class OBJimporter : MonoBehaviour
 
 
             loadedObject.transform.localScale = new Vector3(-0.01f, -0.01f, -0.01f);
-            loadedObject.transform.position = new Vector3(-30.0f + counter * 10.0f, 8.75f, 20.0f);
+            loadedObject.transform.position = new Vector3(-40.0f + counter * 10.0f, 8.75f, 20.0f);
             loadedObject.transform.Rotate(new Vector3(90.0f, 180.0f, 0.0f));
 
-            loadedObject.GetComponentInChildren<MeshRenderer>().material.shader = Shader.Find("Standard");
-            loadedObject.GetComponentInChildren<MeshRenderer>().material.SetFloat("_Glossiness", 0.0f);
+            //loadedObject.GetComponentInChildren<MeshRenderer>().material.shader = Shader.Find("Standard");
+            //loadedObject.GetComponentInChildren<MeshRenderer>().material.SetFloat("_Glossiness", 0.0f);
 
+            GameObject childGameObject;
+            MeshRenderer childGameObjectRenderer;
             for (int child = 0; child  < loadedObject.transform.childCount; child++)
             {
-                tempCollider = loadedObject.transform.GetChild(child).gameObject.AddComponent<MeshCollider>();
+                childGameObject = loadedObject.transform.GetChild(child).gameObject;
+                childGameObjectRenderer = childGameObject.GetComponent<MeshRenderer>();
+                childGameObjectRenderer.material.shader = Shader.Find("Standard");
+                childGameObjectRenderer.material.SetFloat("_Glossiness", 0.0f);
+
+                tempCollider = childGameObject.AddComponent<MeshCollider>();
                 tempCollider.convex = true;
-                loadedObject.transform.GetChild(child).gameObject.AddComponent<Rigidbody>();
+                childGameObject.AddComponent<Rigidbody>();
             }
 
 
-            if (counter > 5)
-                break;
+            counter++;
         }
 
 
