@@ -55,17 +55,17 @@ public class OBJimporter : MonoBehaviour
         }
 
 
-        if (loadedObject != null)
-            Destroy(loadedObject);
-        loadedObject = new OBJLoader().Load(objPath, objPath_material);
+        //if (loadedObject != null)
+        //    Destroy(loadedObject);
+        //loadedObject = new OBJLoader().Load(objPath, objPath_material);
 
 
-        loadedObject.transform.localScale = new Vector3(-0.01f, -0.01f, -0.01f);
-        loadedObject.transform.position = new Vector3(0.0f, 3.75f, 40.0f);
-        loadedObject.transform.Rotate(new Vector3(90.0f, 180.0f, 0.0f));
+        //loadedObject.transform.localScale = new Vector3(-0.01f, -0.01f, -0.01f);
+        //loadedObject.transform.position = new Vector3(0.0f, 3.75f, 40.0f);
+        //loadedObject.transform.Rotate(new Vector3(90.0f, 180.0f, 0.0f));
 
-        loadedObject.GetComponentInChildren<MeshRenderer>().material.shader = Shader.Find("Standard");
-        loadedObject.GetComponentInChildren<MeshRenderer>().material.SetFloat("_Glossiness", 0.0f);
+        //loadedObject.GetComponentInChildren<MeshRenderer>().material.shader = Shader.Find("Standard");
+        //loadedObject.GetComponentInChildren<MeshRenderer>().material.SetFloat("_Glossiness", 0.0f);
 
 
         //Destroy(loadedObject.GetComponent<MeshRenderer>());
