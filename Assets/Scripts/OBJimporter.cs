@@ -31,7 +31,7 @@ public class OBJimporter : MonoBehaviour
 
         foreach (string directory in System.IO.Directory.GetDirectories("C:\\Users\\Krohm\\Documents\\Uni\\Masterarbeit\\NHMV Models\\temp\\obj\\"))
         {
-            if (counter > 20)
+            if (counter > 10)
                 break;
 
             foreach (string file in System.IO.Directory.GetFiles(directory))
