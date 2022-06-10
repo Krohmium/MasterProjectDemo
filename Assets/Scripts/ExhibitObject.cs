@@ -6,12 +6,38 @@ using UnityEngine;
 public class ExhibitObject : MonoBehaviour
 {
     public float meshVolume = 0;
-    public float colliderVolume = 0;
+    public double colliderVolume = 0;
     // Start is called before the first frame update
     void Start()
     {
         Mesh mesh = GetComponent<MeshFilter>().sharedMesh;
-        StartCoroutine(CalculateMeshVolume(mesh));
+        CalculateMeshVolume(mesh);
+
+
+        CapsuleCollider capColl = GetComponent<CapsuleCollider>();
+        if (capColl.radius *2 > capColl.height)
+        {
+            float temp = capColl.radius;
+            capColl.radius = capColl.height / 2;
+            capColl.height = temp * 2;
+            capColl.direction = 2;
+        }
+        CalculateCapsuleVolume(capColl);
+
+        //if (meshVolume > 3.363327e+07)
+        if (colliderVolume > 26158062)
+        {
+            GetComponent<Renderer>().material.color = Color.blue;
+        }
+        else
+        {
+            GameObject parent_ = this.gameObject.transform.parent.gameObject;
+            parent_.transform.position += new Vector3(0,0,20f);
+            parent_.AddComponent(typeof(Rigidbody));
+            //GetComponent<Renderer>().material.color = Color.red;
+        }
+
+
     }
 
     // Update is called once per frame
@@ -21,12 +47,13 @@ public class ExhibitObject : MonoBehaviour
     }
 
 
-
-    private IEnumerator CalculateMeshVolume(Mesh mesh)
+    private void CalculateCapsuleVolume(CapsuleCollider collider)
     {
-        yield return new WaitForSeconds(20);
+        colliderVolume = Math.PI * collider.radius * collider.radius * ((4/3) * collider.radius + collider.height - collider.radius*2);
+    }
+    private void CalculateMeshVolume(Mesh mesh)
+    {
         float volume = 0;
-
         Vector3[] vertices = mesh.vertices;
         int[] triangles = mesh.triangles;
 
