@@ -2,17 +2,19 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityMeshSimplifier;
 
 public class ExhibitObject : MonoBehaviour
 {
+    public float reducedQuality = 0.1f;
     public float meshVolume = 0;
     public double colliderVolume = 0;
+    public double verticeAmount = 0;
     // Start is called before the first frame update
     void Start()
     {
         Mesh mesh = GetComponent<MeshFilter>().sharedMesh;
         CalculateMeshVolume(mesh);
-
 
         CapsuleCollider capColl = GetComponent<CapsuleCollider>();
         if (capColl.radius *2 > capColl.height)
@@ -33,10 +35,10 @@ public class ExhibitObject : MonoBehaviour
         {
             GameObject parent_ = this.gameObject.transform.parent.gameObject;
             parent_.transform.position += new Vector3(0,0,20f);
-            parent_.AddComponent(typeof(Rigidbody));
             //GetComponent<Renderer>().material.color = Color.red;
         }
 
+        SimplifyMeshFilter(GetComponent<MeshFilter>());
 
     }
 
@@ -44,6 +46,25 @@ public class ExhibitObject : MonoBehaviour
     void Update()
     {
         
+    }
+
+
+
+    private void SimplifyMeshFilter(MeshFilter meshFilter)
+    {
+        Mesh sourceMesh = meshFilter.sharedMesh;
+        if (sourceMesh == null) // verify that the mesh filter actually has a mesh
+            return;
+
+        // Create our mesh simplifier and setup our entire mesh in it
+        var meshSimplifier = new MeshSimplifier();
+        meshSimplifier.Initialize(sourceMesh);
+
+        // This is where the magic happens, lets simplify!
+        meshSimplifier.SimplifyMesh(reducedQuality);
+
+        // Create our final mesh and apply it back to our mesh filter
+        meshFilter.sharedMesh = meshSimplifier.ToMesh();
     }
 
 
@@ -56,6 +77,8 @@ public class ExhibitObject : MonoBehaviour
         float volume = 0;
         Vector3[] vertices = mesh.vertices;
         int[] triangles = mesh.triangles;
+
+        verticeAmount = mesh.vertices.Length;
 
         for (int i = 0; i < triangles.Length; i += 3)
         {
