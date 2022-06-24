@@ -7,6 +7,7 @@ using System.IO;
 
 public class MuseumGenerator : MonoBehaviour
 {
+    public UIController UI;
 
     string objPath = string.Empty;
     string objPath_material = string.Empty;
@@ -28,10 +29,11 @@ public class MuseumGenerator : MonoBehaviour
     {
         objPath = "C:\\Users\\Krohm\\Documents\\Uni\\Masterarbeit\\NHMV Models\\temp\\obj\\figure-holding-the-hraschina-meteorite\\Karyatide_Hraschina_Saal4_EDIT_VW_lowres.obj";
         objPath_material = "C:\\Users\\Krohm\\Documents\\Uni\\Masterarbeit\\NHMV Models\\temp\\obj\\figure-holding-the-hraschina-meteorite\\Karyatide_Hraschina_Saal4_EDIT_VW_lowres.mtl";
-
+        UI.progressMax = 3;
         foreach (string directory in System.IO.Directory.GetDirectories("C:\\Users\\Krohm\\Documents\\Uni\\Masterarbeit\\NHMV Models\\temp\\obj\\"))
         {
-            if (counter > 10)
+            UI.progressCurrent = counter;
+            if (counter > 2)
                 break;
 
             foreach (string file in System.IO.Directory.GetFiles(directory))
@@ -62,6 +64,7 @@ public class MuseumGenerator : MonoBehaviour
     {
         if (PlayerInRange && Input.GetKeyDown(KeyCode.E))
         {
+            UI.progressMax++;
             Debug.Log("entering Loading new Object");
             int i = 0;
             foreach (string directory in System.IO.Directory.GetDirectories("C:\\Users\\Krohm\\Documents\\Uni\\Masterarbeit\\NHMV Models\\temp\\obj\\"))
@@ -85,6 +88,7 @@ public class MuseumGenerator : MonoBehaviour
                 }
 
                 loadObjectToScene(objPath, objPath_material);
+                UI.progressCurrent++;
 
                 if (counter == i)
                 {   
