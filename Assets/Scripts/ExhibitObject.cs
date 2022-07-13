@@ -29,7 +29,8 @@ public class ExhibitObject : MonoBehaviour
         //if (meshVolume > 3.363327e+07)
         if (colliderVolume > 26158062)
         {
-            GetComponent<Renderer>().material.color = Color.blue;
+            Destroy(this.gameObject);
+            //GetComponent<Renderer>().material.color = Color.blue;
         }
         else
         {
@@ -43,10 +44,13 @@ public class ExhibitObject : MonoBehaviour
 
             if (capColl.direction == 2)
             {
-                exhibitPodest_.transform.position += new Vector3(capColl.center.x, capColl.center.y, 0f);
+                exhibitPodest_.transform.position += new Vector3(capColl.center.x / 100, 0, capColl.center.y / 100);
                 exhibitPodest_.transform.position += new Vector3(0, 0.30f, 0f);
 
-                this.gameObject.transform.position += new Vector3(0, -capColl.center.z / 100 + capColl.height / 200f + 1.3f, 0f);
+                this.gameObject.transform.position += new Vector3(0, -capColl.center.z / 100 + capColl.height / 200f + 1.15f, 0f);
+
+                if (capColl.radius * 2 > 80)
+                    exhibitPodest_.transform.localScale = new Vector3(-capColl.radius * 2-20, -15f, -capColl.radius * 2-20);
 
             }
 
