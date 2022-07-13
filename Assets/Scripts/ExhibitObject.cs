@@ -33,8 +33,23 @@ public class ExhibitObject : MonoBehaviour
         }
         else
         {
+            GameObject podest_ = GameObject.Find("template/podest");
+            GameObject exhibitPodest_ = GameObject.Instantiate(podest_);
             GameObject parent_ = this.gameObject.transform.parent.gameObject;
-            parent_.transform.position += new Vector3(0,0,20f);
+            parent_.transform.position = new Vector3(parent_.transform.position.x, 0, parent_.transform.position.z + 20f);
+
+            exhibitPodest_.transform.SetParent(parent_.transform, true);
+            exhibitPodest_.transform.position = parent_.transform.position;
+
+            if (capColl.direction == 2)
+            {
+                exhibitPodest_.transform.position += new Vector3(capColl.center.x, capColl.center.y, 0f);
+                exhibitPodest_.transform.position += new Vector3(0, 0.30f, 0f);
+
+                this.gameObject.transform.position += new Vector3(0, -capColl.center.z / 100 + capColl.height / 200f + 1.3f, 0f);
+
+            }
+
             //GetComponent<Renderer>().material.color = Color.red;
         }
 
