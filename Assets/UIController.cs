@@ -15,7 +15,6 @@ public class UIController : MonoBehaviour
         var root = GetComponent<UIDocument>().rootVisualElement;
 
         progress = root.Q<ProgressBar>("loadingprogress");
-
     }
 
     // Update is called once per frame
@@ -24,6 +23,7 @@ public class UIController : MonoBehaviour
         if (progressMax != 0)
         {
             progress.value = (float)progressCurrent / (float)progressMax*100;
+            progress.title = progressCurrent + "/" + progressMax;
         }
         else
         {
