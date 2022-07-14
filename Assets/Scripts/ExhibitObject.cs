@@ -16,6 +16,37 @@ public class ExhibitObject : MonoBehaviour
         Mesh mesh = GetComponent<MeshFilter>().sharedMesh;
         CalculateMeshVolume(mesh);
 
+        Vector3 boundssize = GetComponent<Renderer>().localBounds.size;
+        float x = boundssize.x;
+        float y = boundssize.y;
+        float z = boundssize.z;
+
+
+        CapsuleCollider coli = this.gameObject.AddComponent<CapsuleCollider>();
+        coli.direction = 0;
+        coli.height = x;
+        if (y > z)
+            coli.radius = y / 2;
+        else
+            coli.radius = z / 2;
+
+        coli = this.gameObject.AddComponent<CapsuleCollider>();
+        coli.direction = 1;
+        coli.height = y;
+        if (x > z)
+            coli.radius = x / 2;
+        else
+            coli.radius = z / 2;
+
+        coli = this.gameObject.AddComponent<CapsuleCollider>();
+        coli.direction = 2;
+        coli.height = z;
+        if (y > x)
+            coli.radius = y / 2;
+        else
+            coli.radius = x / 2;
+
+
         CapsuleCollider capColl = GetComponent<CapsuleCollider>();
         if (capColl.radius *2 > capColl.height)
         {
@@ -42,6 +73,18 @@ public class ExhibitObject : MonoBehaviour
             exhibitPodest_.transform.SetParent(parent_.transform, true);
             exhibitPodest_.transform.position = parent_.transform.position;
 
+            if (capColl.direction == 1)
+            {
+                exhibitPodest_.transform.position += new Vector3(capColl.center.x / 100, 0, capColl.center.y / 100);
+                exhibitPodest_.transform.position += new Vector3(0, 0.30f, 0f);
+
+                this.gameObject.transform.position += new Vector3(0, -capColl.center.z / 100 + capColl.height / 200f + 1.15f, 0f);
+
+                if (capColl.radius * 2 > 80)
+                    exhibitPodest_.transform.localScale = new Vector3(-capColl.radius * 2 - 20, -15f, -capColl.radius * 2 - 20);
+
+            }
+
             if (capColl.direction == 2)
             {
                 exhibitPodest_.transform.position += new Vector3(capColl.center.x / 100, 0, capColl.center.y / 100);
@@ -50,7 +93,7 @@ public class ExhibitObject : MonoBehaviour
                 this.gameObject.transform.position += new Vector3(0, -capColl.center.z / 100 + capColl.height / 200f + 1.15f, 0f);
 
                 if (capColl.radius * 2 > 80)
-                    exhibitPodest_.transform.localScale = new Vector3(-capColl.radius * 2-20, -15f, -capColl.radius * 2-20);
+                    exhibitPodest_.transform.localScale = new Vector3(-capColl.radius * 2 - 20, -15f, -capColl.radius * 2 - 20);
 
             }
 
