@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.atteneder.gltfast": "4.8.3",
     "com.unity.collab-proxy": "1.15.15",
     "com.unity.feature.development": "1.0.1",
     "com.unity.ide.rider": "3.0.13",
@@ -11,6 +12,7 @@
     "com.unity.ugui": "1.0.0",
     "com.unity.visualscripting": "1.7.6",
     "com.whinarn.unitymeshsimplifier": "https://github.com/Whinarn/UnityMeshSimplifier.git",
+    "jillejr.newtonsoft.json-for-unity": "13.0.102",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",
@@ -42,5 +44,15 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
-  }
+  },
+  "scopedRegistries": [
+    {
+      "name": "package.openupm.com",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.atteneder.gltfast",
+        "jillejr.newtonsoft.json-for-unity"
+      ]
+    }
+  ]
 }
