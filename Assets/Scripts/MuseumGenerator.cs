@@ -64,6 +64,51 @@ public class MuseumGenerator : MonoBehaviour
 
     protected void Update()
     {
+        if(Input.GetKeyDown(KeyCode.M) && Input.GetKey(KeyCode.LeftControl))
+        {
+            for(int j = 0; j <20; j++)
+            {
+                //UI.progressMax++;
+                Debug.Log("entering Loading new Object");
+                int i = 0;
+                foreach (string directory in System.IO.Directory.GetDirectories("C:\\Users\\Krohm\\Documents\\Uni\\Masterarbeit\\NHMV Models\\temp\\obj\\"))
+                {
+                    if (i < counter)
+                    {
+                        Debug.Log("inc i");
+                        i++;
+                        continue;
+                    }
+
+                    Debug.Log("Loading new Object");
+                    foreach (string file in System.IO.Directory.GetFiles(directory))
+                    {
+                        extension = file.Split(".")[1];
+
+                        if (extension == "obj")
+                            objPath = file;
+                        if (extension == "mtl")
+                            objPath_material = file;
+                    }
+
+                    UI.progressCurrent++;
+
+                    loadObjectToScene(objPath, objPath_material);
+
+                    if (counter == i)
+                    {
+                        if (counter % 8 == 0)
+                        {
+                            row++;
+                        }
+                        Debug.Log("inc counter and break");
+                        counter++;
+                        break;
+                    }
+                }
+            }
+        }
+
         if (PlayerInRange && Input.GetKeyDown(KeyCode.E))
         {
             //UI.progressMax++;
@@ -148,7 +193,7 @@ public class MuseumGenerator : MonoBehaviour
             childGameObjectRenderer.material.SetFloat("_Glossiness", 0.0f);
 
             //tempCollider = childGameObject.AddComponent<BoxCollider>();
-            childGameObject.AddComponent<CapsuleCollider>();
+            //childGameObject.AddComponent<CapsuleCollider>();
             //childGameObject.AddComponent<Rigidbody>();
         }
     }

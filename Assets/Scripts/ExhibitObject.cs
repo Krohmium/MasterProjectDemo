@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,8 +9,13 @@ public class ExhibitObject : MonoBehaviour
 {
     public float reducedQuality = 0.1f;
     public float meshVolume = 0;
-    public double colliderVolume = 0;
+    public double[] colliderVolume = new double[3];
     public double verticeAmount = 0;
+
+
+
+    public float x, y, z;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -17,51 +23,35 @@ public class ExhibitObject : MonoBehaviour
         CalculateMeshVolume(mesh);
 
         Vector3 boundssize = GetComponent<Renderer>().localBounds.size;
-        float x = boundssize.x;
-        float y = boundssize.y;
-        float z = boundssize.z;
+        x = boundssize.x;
+        y = boundssize.y;
+        z = boundssize.z;
+        
+        float[] xyz = new float[3] { boundssize.x, boundssize.y, boundssize.z };
+        CapsuleCollider[] colids = new CapsuleCollider[3];
 
-
-        CapsuleCollider coli = this.gameObject.AddComponent<CapsuleCollider>();
-        coli.direction = 0;
-        coli.height = x;
-        if (y > z)
-            coli.radius = y / 2;
-        else
-            coli.radius = z / 2;
-
-        coli = this.gameObject.AddComponent<CapsuleCollider>();
-        coli.direction = 1;
-        coli.height = y;
-        if (x > z)
-            coli.radius = x / 2;
-        else
-            coli.radius = z / 2;
-
-        coli = this.gameObject.AddComponent<CapsuleCollider>();
-        coli.direction = 2;
-        coli.height = z;
-        if (y > x)
-            coli.radius = y / 2;
-        else
-            coli.radius = x / 2;
-
-
-        CapsuleCollider capColl = GetComponent<CapsuleCollider>();
-        if (capColl.radius *2 > capColl.height)
+        for (int i = 0; i < 3; i++)
         {
-            float temp = capColl.radius;
-            capColl.radius = capColl.height / 2;
-            capColl.height = temp * 2;
-            capColl.direction = 2;
-        }
-        CalculateCapsuleVolume(capColl);
+            colids[i] = this.gameObject.AddComponent<CapsuleCollider>();
+            colids[i].direction = i;
+            colids[i].height = xyz[i];
+            if (xyz[(i+1)%3] > xyz[(i + 2) % 3])
+                colids[i].radius = xyz[(i + 1) % 3] / 2;
+            else
+                colids[i].radius = xyz[(i + 2) % 3] / 2;
 
-        //if (meshVolume > 3.363327e+07)
-        if (colliderVolume > 26158062)
+            colliderVolume[i] = CalculateCapsuleVolume(colids[i]);
+        }
+
+        int minCollider = colliderVolume.ToList().IndexOf(colliderVolume.Min());
+        Destroy(colids[(minCollider + 1) % 3]);
+        Destroy(colids[(minCollider + 2) % 3]);
+
+        CapsuleCollider capColl = colids[minCollider];
+
+        if (colliderVolume[minCollider] > 26158062)
         {
             Destroy(this.gameObject);
-            //GetComponent<Renderer>().material.color = Color.blue;
         }
         else
         {
@@ -73,15 +63,31 @@ public class ExhibitObject : MonoBehaviour
             exhibitPodest_.transform.SetParent(parent_.transform, true);
             exhibitPodest_.transform.position = parent_.transform.position;
 
+
+            //this.gameObject.transform.position += new Vector3(0, capColl.height / 200f + 1.15f, 0f);
+
+
+            if (capColl.direction == 0)
+            {
+                exhibitPodest_.transform.position += new Vector3(capColl.center.x / 100, 0, capColl.center.y / 100);
+                exhibitPodest_.transform.position += new Vector3(0, 0.30f, 0f);
+
+                this.gameObject.transform.position += new Vector3(0, -capColl.center.z / 100 + capColl.radius / 100f + 1.15f, 0f);
+
+                //if (capColl.radius * 2 > 80)
+                    exhibitPodest_.transform.localScale = new Vector3(-capColl.height - 20, -15f, -capColl.radius * 2 - 20);
+
+            }
+
             if (capColl.direction == 1)
             {
                 exhibitPodest_.transform.position += new Vector3(capColl.center.x / 100, 0, capColl.center.y / 100);
                 exhibitPodest_.transform.position += new Vector3(0, 0.30f, 0f);
 
-                this.gameObject.transform.position += new Vector3(0, -capColl.center.z / 100 + capColl.height / 200f + 1.15f, 0f);
+                this.gameObject.transform.position += new Vector3(0, -capColl.center.z / 100 + capColl.radius / 100f + 1.15f, 0f);
 
-                if (capColl.radius * 2 > 80)
-                    exhibitPodest_.transform.localScale = new Vector3(-capColl.radius * 2 - 20, -15f, -capColl.radius * 2 - 20);
+                //if (capColl.radius * 2 > 80)
+                    exhibitPodest_.transform.localScale = new Vector3(-capColl.radius * 2 - 20, -15f, -capColl.height - 20);
 
             }
 
@@ -90,9 +96,10 @@ public class ExhibitObject : MonoBehaviour
                 exhibitPodest_.transform.position += new Vector3(capColl.center.x / 100, 0, capColl.center.y / 100);
                 exhibitPodest_.transform.position += new Vector3(0, 0.30f, 0f);
 
+                //this.gameObject.transform.position += new Vector3(0, capColl.height / 200f + 1.15f, 0f);
                 this.gameObject.transform.position += new Vector3(0, -capColl.center.z / 100 + capColl.height / 200f + 1.15f, 0f);
 
-                if (capColl.radius * 2 > 80)
+                //if (capColl.radius * 2 > 80)
                     exhibitPodest_.transform.localScale = new Vector3(-capColl.radius * 2 - 20, -15f, -capColl.radius * 2 - 20);
 
             }
@@ -100,7 +107,7 @@ public class ExhibitObject : MonoBehaviour
             //GetComponent<Renderer>().material.color = Color.red;
         }
 
-        SimplifyMeshFilter(GetComponent<MeshFilter>());
+        //SimplifyMeshFilter(GetComponent<MeshFilter>());
 
     }
 
@@ -130,9 +137,9 @@ public class ExhibitObject : MonoBehaviour
     }
 
 
-    private void CalculateCapsuleVolume(CapsuleCollider collider)
+    private double CalculateCapsuleVolume(CapsuleCollider collider)
     {
-        colliderVolume = Math.PI * collider.radius * collider.radius * ((4/3) * collider.radius + collider.height - collider.radius*2);
+        return Math.Abs(Math.PI * collider.radius * collider.radius * ((4/3) * collider.radius + collider.height - collider.radius*2));
     }
     private void CalculateMeshVolume(Mesh mesh)
     {
