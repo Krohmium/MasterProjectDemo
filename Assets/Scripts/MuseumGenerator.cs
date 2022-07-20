@@ -19,6 +19,8 @@ public class MuseumGenerator : MonoBehaviour
     List<GameObject> loadedObjects = new List<GameObject>();
     protected bool PlayerInRange;
 
+    [SerializeField] InspectController inspectController;
+
     int counter = 0;
     int row = 0;
 
@@ -191,6 +193,13 @@ public class MuseumGenerator : MonoBehaviour
             childGameObjectRenderer = childGameObject.GetComponent<MeshRenderer>();
             childGameObjectRenderer.material.shader = Shader.Find("Standard");
             childGameObjectRenderer.material.SetFloat("_Glossiness", 0.0f);
+            childGameObject.tag = "ExhibitObject";
+            childGameObject.layer = 6;
+           
+            InspectorObjectController inspectorObjectController = childGameObject.AddComponent<InspectorObjectController>();
+            inspectorObjectController.objectName = childGameObject.gameObject.name;
+            inspectorObjectController.extraInfo = "Object Path: " + objectPath + "\nMaterial Path: " + materialPath;
+            inspectorObjectController.inspectController = inspectController;
 
             //tempCollider = childGameObject.AddComponent<BoxCollider>();
             //childGameObject.AddComponent<CapsuleCollider>();

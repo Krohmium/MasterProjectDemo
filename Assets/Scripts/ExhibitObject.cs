@@ -58,7 +58,7 @@ public class ExhibitObject : MonoBehaviour
             GameObject podest_ = GameObject.Find("template/podest");
             GameObject exhibitPodest_ = GameObject.Instantiate(podest_);
             GameObject parent_ = this.gameObject.transform.parent.gameObject;
-            parent_.transform.position = new Vector3(parent_.transform.position.x, 0, parent_.transform.position.z);
+            //parent_.transform.position = new Vector3(parent_.transform.position.x, 0, parent_.transform.position.z);
 
             exhibitPodest_.transform.SetParent(parent_.transform, true);
             exhibitPodest_.transform.position = parent_.transform.position;
