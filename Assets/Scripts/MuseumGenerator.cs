@@ -178,7 +178,7 @@ public class MuseumGenerator : MonoBehaviour
         loadedObject = new OBJLoader().Load(objectPath, materialPath);
 
         loadedObject.transform.localScale = new Vector3(-0.01f, -0.01f, -0.01f);
-        loadedObject.transform.position = new Vector3(-40.0f + counter % 8 * 10.0f, 8.75f, 10.0f + counter / 8 * 10.0f);
+        loadedObject.transform.position = new Vector3(-40.0f + counter % 8 * 10.0f, 0, 10.0f + counter / 8 * 10.0f);
         loadedObject.transform.Rotate(new Vector3(90.0f, 180.0f, 0.0f));
 
         GameObject childGameObject;
