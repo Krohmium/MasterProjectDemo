@@ -189,7 +189,7 @@ public class MuseumGenerator : MonoBehaviour
         for (int child = 0; child < loadedObject.transform.childCount; child++)
         {
             childGameObject = loadedObject.transform.GetChild(child).gameObject;
-            childGameObject.AddComponent<ExhibitObject>();
+            ExhibitObject exibObj = childGameObject.AddComponent<ExhibitObject>();
             childGameObjectRenderer = childGameObject.GetComponent<MeshRenderer>();
             childGameObjectRenderer.material.shader = Shader.Find("Standard");
             childGameObjectRenderer.material.SetFloat("_Glossiness", 0.0f);
@@ -200,6 +200,7 @@ public class MuseumGenerator : MonoBehaviour
             inspectorObjectController.objectName = childGameObject.gameObject.name;
             inspectorObjectController.extraInfo = "Object Path: " + objectPath + "\nMaterial Path: " + materialPath;
             inspectorObjectController.inspectController = inspectController;
+
 
             //tempCollider = childGameObject.AddComponent<BoxCollider>();
             //childGameObject.AddComponent<CapsuleCollider>();

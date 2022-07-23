@@ -12,11 +12,23 @@ public class InspectRaycast : MonoBehaviour
     [SerializeField] private Image crosshair;
     private bool isCrosshairActive;
     private bool doOnce;
+    private bool closeUpActive;
+
+    [SerializeField] private Camera MainCamera;
+    [SerializeField] private Camera CloseUpCamera;
+    [SerializeField] private GameObject closeUpObjectParent;
+
+    private movement movementScript;
+
+    private GameObject closeUpObject;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        movementScript = this.gameObject.transform.parent.transform.parent.GetComponentInParent<movement>();
+        MainCamera.enabled = true;
+        CloseUpCamera.enabled = false;
+
     }
 
     // Update is called once per frame
@@ -25,7 +37,7 @@ public class InspectRaycast : MonoBehaviour
         RaycastHit hit;
         Vector3 fwd = transform.TransformDirection(Vector3.forward);
 
-        if(Physics.Raycast(transform.position, fwd, out hit, rayLength, layerMaskInteract.value))
+        if(!closeUpActive && Physics.Raycast(transform.position, fwd, out hit, rayLength, layerMaskInteract.value))
         {
             if(hit.collider.CompareTag("ExhibitObject"))
             {
@@ -42,6 +54,22 @@ public class InspectRaycast : MonoBehaviour
                 {
                     raycastedObj.ShowExtraInfo();
                 }
+                else if(Input.GetKeyDown(KeyCode.C))
+                {
+                    MainCamera.enabled = false;
+                    CloseUpCamera.enabled = true;
+                    movementScript.freeze = true;
+                    MainCamera.transform.parent.transform.parent.GetComponent<camera>().freeze = true;
+                    closeUpActive = true;
+
+                    closeUpObject = Instantiate(raycastedObj.gameObject);
+                    //Destroy(closeUpObjectParent.transform.GetChild(1));
+                    closeUpObject.transform.parent = closeUpObjectParent.transform;
+                    closeUpObject.layer = 5;
+                    closeUpObject.transform.localPosition = new Vector3(0, 0, 0);
+                    closeUpObject.GetComponent<ExhibitObject>().SetForCloseup();
+                    crosshair.gameObject.SetActive(false);
+                }
             }
         }
         else
@@ -52,6 +80,18 @@ public class InspectRaycast : MonoBehaviour
                 CrosshairChange(false);
                 doOnce = false;
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape) && closeUpActive)
+        {
+            MainCamera.enabled = true;
+            CloseUpCamera.enabled = false;
+            movementScript.freeze = false;
+            MainCamera.transform.parent.transform.parent.GetComponent<camera>().freeze = false;
+            closeUpActive = false;
+            crosshair.gameObject.SetActive(true);
+
+            Destroy(closeUpObject);
         }
     }
     void CrosshairChange(bool on)

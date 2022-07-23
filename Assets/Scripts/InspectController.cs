@@ -58,4 +58,10 @@ public class InspectController : MonoBehaviour
         extraInfoBG.SetActive(false);
         extraInfoUI.text = "";
     }
+    public void ShowCloseUp()
+    {
+    }
+    public void HideCloseUp()
+    {
+    }
 }

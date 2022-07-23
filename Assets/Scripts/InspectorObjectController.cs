@@ -23,11 +23,22 @@ public class InspectorObjectController : MonoBehaviour
     {
         inspectController.ShowInfo(extraInfo);
     }
-    
+
     public void HideExtraInfo()
     {
         inspectController.HideInfo();
     }
+
+    public void ShowCloseUp()
+    {
+        inspectController.ShowCloseUp();
+    }
+
+    public void HideCloseUp()
+    {
+        inspectController.HideCloseUp();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
