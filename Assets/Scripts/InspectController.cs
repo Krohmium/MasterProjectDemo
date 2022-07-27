@@ -23,16 +23,6 @@ public class InspectController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (startTimer)
-        {
-            timer -= Time.deltaTime;
-            if (timer<=0)
-            {
-                timer = 0;
-                HideInfo();
-                startTimer = false;
-            }
-        }
         
     }
 
@@ -48,8 +38,6 @@ public class InspectController : MonoBehaviour
     }
     public void ShowInfo(string newInfo)
     {
-        timer = onScreenTimer;
-        startTimer = true;
         extraInfoBG.SetActive(true);
         extraInfoUI.text = newInfo;
     }

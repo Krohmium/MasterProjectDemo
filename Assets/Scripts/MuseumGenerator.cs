@@ -4,6 +4,7 @@ using UnityEngine;
 using Dummiesman;
 using UnityEditor;
 using System.IO;
+using System.Xml.Linq;
 
 public class MuseumGenerator : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class MuseumGenerator : MonoBehaviour
 
     string objPath = string.Empty;
     string objPath_material = string.Empty;
+    string objPath_xml = string.Empty;
     string extension = string.Empty;
 
     string error = string.Empty;
@@ -40,6 +42,10 @@ public class MuseumGenerator : MonoBehaviour
             if (counter > 2)
                 break;
 
+            objPath = string.Empty;
+            objPath_material = string.Empty;
+            objPath_xml = string.Empty;
+
             foreach (string file in System.IO.Directory.GetFiles(directory))
             {
                 extension = file.Split(".")[1];
@@ -48,9 +54,11 @@ public class MuseumGenerator : MonoBehaviour
                     objPath = file;
                 if (extension == "mtl")
                     objPath_material = file;
+                if (extension == "xml")
+                    objPath_xml = file;
             }
 
-            loadObjectToScene(objPath, objPath_material);
+            loadObjectToScene(objPath, objPath_material, objPath_xml);
 
             counter++;
             if (counter % 8 == 0)
@@ -82,6 +90,10 @@ public class MuseumGenerator : MonoBehaviour
                         continue;
                     }
 
+                    objPath = string.Empty;
+                    objPath_material = string.Empty;
+                    objPath_xml = string.Empty;
+
                     Debug.Log("Loading new Object");
                     foreach (string file in System.IO.Directory.GetFiles(directory))
                     {
@@ -91,11 +103,13 @@ public class MuseumGenerator : MonoBehaviour
                             objPath = file;
                         if (extension == "mtl")
                             objPath_material = file;
+                        if (extension == "xml")
+                            objPath_xml = file;
                     }
 
                     UI.progressCurrent++;
 
-                    loadObjectToScene(objPath, objPath_material);
+                    loadObjectToScene(objPath, objPath_material, objPath_xml);
 
                     if (counter == i)
                     {
@@ -124,7 +138,11 @@ public class MuseumGenerator : MonoBehaviour
                     i++;
                     continue;
                 }
-                 
+
+                objPath = string.Empty;
+                objPath_material = string.Empty;
+                objPath_xml = string.Empty;
+
                 Debug.Log("Loading new Object");
                 foreach (string file in System.IO.Directory.GetFiles(directory))
                 {
@@ -134,11 +152,13 @@ public class MuseumGenerator : MonoBehaviour
                         objPath = file;
                     if (extension == "mtl")
                         objPath_material = file;
+                    if (extension == "xml")
+                        objPath_xml = file;
                 }
 
                 UI.progressCurrent++;
 
-                loadObjectToScene(objPath, objPath_material);
+                loadObjectToScene(objPath, objPath_material, objPath_xml);
 
                 if (counter == i)
                 {   
@@ -169,7 +189,7 @@ public class MuseumGenerator : MonoBehaviour
             PlayerInRange = false;
         }
     }
-    protected void loadObjectToScene(string objectPath, string materialPath)
+    protected void loadObjectToScene(string objectPath, string materialPath, string xmlPath)
     {
         foreach (int n in skiplist) // go over every number in the list
         {
@@ -198,13 +218,14 @@ public class MuseumGenerator : MonoBehaviour
            
             InspectorObjectController inspectorObjectController = childGameObject.AddComponent<InspectorObjectController>();
             inspectorObjectController.objectName = childGameObject.gameObject.name;
-            inspectorObjectController.extraInfo = "Object Path: " + objectPath + "\nMaterial Path: " + materialPath;
             inspectorObjectController.inspectController = inspectController;
 
-
-            //tempCollider = childGameObject.AddComponent<BoxCollider>();
-            //childGameObject.AddComponent<CapsuleCollider>();
-            //childGameObject.AddComponent<Rigidbody>();
+            if (xmlPath != "")
+            {
+                XDocument document = XDocument.Load(xmlPath);
+                XElement description = document.Element("Description");
+                inspectorObjectController.extraInfo = description.Value;
+            }
         }
     }
 

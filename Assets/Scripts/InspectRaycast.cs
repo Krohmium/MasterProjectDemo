@@ -13,6 +13,7 @@ public class InspectRaycast : MonoBehaviour
     private bool isCrosshairActive;
     private bool doOnce;
     private bool closeUpActive;
+    private bool extraInfoActive;
 
     [SerializeField] private Camera MainCamera;
     [SerializeField] private Camera CloseUpCamera;
@@ -54,6 +55,7 @@ public class InspectRaycast : MonoBehaviour
                 if(Input.GetKeyDown(KeyCode.I))
                 {
                     raycastedObj.ShowExtraInfo();
+                    extraInfoActive = true;
                 }
                 else if(Input.GetKeyDown(KeyCode.C))
                 {
@@ -83,8 +85,14 @@ public class InspectRaycast : MonoBehaviour
                 raycastedObj.HideObjectName();
                 CrosshairChange(false);
                 doOnce = false;
+
+                if (extraInfoActive)
+                {
+                    raycastedObj.HideExtraInfo();
+                    extraInfoActive = false;
+                }
             }
-        }
+        } 
 
         if (Input.GetKeyDown(KeyCode.Escape) && closeUpActive)
         {
