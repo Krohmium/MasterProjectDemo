@@ -17,6 +17,7 @@ public class InspectRaycast : MonoBehaviour
     [SerializeField] private Camera MainCamera;
     [SerializeField] private Camera CloseUpCamera;
     [SerializeField] private GameObject closeUpObjectParent;
+    [SerializeField] private GameObject closeUpAnchor;
 
     private movement movementScript;
 
@@ -62,11 +63,14 @@ public class InspectRaycast : MonoBehaviour
                     MainCamera.transform.parent.transform.parent.GetComponent<camera>().freeze = true;
                     closeUpActive = true;
 
+                    closeUpAnchor = new GameObject("ParentAnchor " + raycastedObj.gameObject.transform.name);
+                    closeUpAnchor.transform.parent = closeUpObjectParent.transform;
+                    closeUpAnchor.transform.localPosition = new Vector3(0, 0, 0);
+                    closeUpAnchor.transform.localScale = new Vector3(1f, 1f, 1f);
+
                     closeUpObject = Instantiate(raycastedObj.gameObject);
-                    //Destroy(closeUpObjectParent.transform.GetChild(1));
-                    closeUpObject.transform.parent = closeUpObjectParent.transform;
+                    closeUpObject.transform.parent = closeUpAnchor.transform;
                     closeUpObject.layer = 5;
-                    closeUpObject.transform.localPosition = new Vector3(0, 0, 0);
                     closeUpObject.GetComponent<ExhibitObject>().SetForCloseup();
                     crosshair.gameObject.SetActive(false);
                 }
@@ -92,6 +96,7 @@ public class InspectRaycast : MonoBehaviour
             crosshair.gameObject.SetActive(true);
 
             Destroy(closeUpObject);
+            Destroy(closeUpAnchor);
         }
     }
     void CrosshairChange(bool on)

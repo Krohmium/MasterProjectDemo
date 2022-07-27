@@ -18,41 +18,45 @@ public class ExhibitObject : MonoBehaviour
     private float xRotation = 0.0f;
     private float yRotation = 0.0f;
     private Vector3 lastMousePosition;
+    private Vector3 originalLocalScale;
+    private double closeUpZoomFactor = 1.0d;
 
     public float x, y, z;
 
     void Start()
     {
-        Mesh mesh = GetComponent<MeshFilter>().sharedMesh;
-        CalculateMeshVolume(mesh);
-
-        Vector3 boundssize = GetComponent<Renderer>().localBounds.size;
-        x = boundssize.x;
-        y = boundssize.y;
-        z = boundssize.z;
-
-        float[] xyz = new float[3] { boundssize.x, boundssize.y, boundssize.z };
-        CapsuleCollider[] colids = new CapsuleCollider[3];
-
-        for (int i = 0; i < 3; i++)
+        if (!this.gameObject.transform.name.EndsWith("(Clone)"))
         {
-            colids[i] = this.gameObject.AddComponent<CapsuleCollider>();
-            colids[i].direction = i;
-            colids[i].height = xyz[i];
-            if (xyz[(i + 1) % 3] > xyz[(i + 2) % 3])
-                colids[i].radius = xyz[(i + 1) % 3] / 2;
-            else
-                colids[i].radius = xyz[(i + 2) % 3] / 2;
+            Mesh mesh = GetComponent<MeshFilter>().sharedMesh;
+            CalculateMeshVolume(mesh);
 
-            colliderVolume[i] = CalculateCapsuleVolume(colids[i]);
+            Vector3 boundssize = GetComponent<Renderer>().localBounds.size;
+            x = boundssize.x;
+            y = boundssize.y;
+            z = boundssize.z;
+
+            float[] xyz = new float[3] { boundssize.x, boundssize.y, boundssize.z };
+            CapsuleCollider[] colids = new CapsuleCollider[3];
+
+            for (int i = 0; i < 3; i++)
+            {
+                colids[i] = this.gameObject.AddComponent<CapsuleCollider>();
+                colids[i].direction = i;
+                colids[i].height = xyz[i];
+                if (xyz[(i + 1) % 3] > xyz[(i + 2) % 3])
+                    colids[i].radius = xyz[(i + 1) % 3] / 2;
+                else
+                    colids[i].radius = xyz[(i + 2) % 3] / 2;
+
+                colliderVolume[i] = CalculateCapsuleVolume(colids[i]);
+            }
+
+            minCollider = colliderVolume.ToList().IndexOf(colliderVolume.Min());
+            Destroy(colids[(minCollider + 1) % 3]);
+            Destroy(colids[(minCollider + 2) % 3]);
+
+            capColl = colids[minCollider];
         }
-
-        minCollider = colliderVolume.ToList().IndexOf(colliderVolume.Min());
-        Destroy(colids[(minCollider + 1) % 3]);
-        Destroy(colids[(minCollider + 2) % 3]);
-
-        capColl = colids[minCollider];
-
 
         if (colliderVolume[minCollider] > 26158062)
         {
@@ -120,17 +124,21 @@ public class ExhibitObject : MonoBehaviour
 
             if (Input.GetMouseButton(0))
             {
-                this.gameObject.transform.localPosition += Input.mousePosition-lastMousePosition;
+                this.gameObject.transform.parent.transform.localPosition += Input.mousePosition-lastMousePosition;
 
             }
             else
             { 
-                yRotation -= mouseX;
-                xRotation += mouseY;
+                yRotation += mouseX;
+                xRotation -= mouseY;
 
-                this.gameObject.transform.eulerAngles = new Vector3(xRotation, yRotation, 0.0f);
+                this.gameObject.transform.parent.transform.eulerAngles = new Vector3(xRotation, 0.0f, yRotation);
             }
             lastMousePosition = Input.mousePosition;
+
+            closeUpZoomFactor += Input.mouseScrollDelta.y * 0.1;
+            closeUpZoomFactor = Math.Max(0.1d, closeUpZoomFactor);
+            this.gameObject.transform.parent.transform.localScale = Vector3.one * (float)closeUpZoomFactor;
         }
     }
 
@@ -144,8 +152,9 @@ public class ExhibitObject : MonoBehaviour
         float[] xyz = new float[3] { boundssize.x, boundssize.y, boundssize.z };
 
         float scale = - Screen.height / xyz.Max(); // objects need to be inverted
-
-        this.transform.localScale = new Vector3(scale, scale, scale);
+        originalLocalScale = new Vector3(scale, scale, scale);
+        this.transform.localScale = originalLocalScale;
+        this.transform.localPosition = GetComponent<CapsuleCollider>().center * -scale;
         closeUpActive = true;
     }
 
