@@ -33,6 +33,7 @@ public class MuseumGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Cursor.visible = false;
         objPath = "C:\\Users\\Krohm\\Documents\\Uni\\Masterarbeit\\NHMV Models\\temp\\obj\\figure-holding-the-hraschina-meteorite\\Karyatide_Hraschina_Saal4_EDIT_VW_lowres.obj";
         objPath_material = "C:\\Users\\Krohm\\Documents\\Uni\\Masterarbeit\\NHMV Models\\temp\\obj\\figure-holding-the-hraschina-meteorite\\Karyatide_Hraschina_Saal4_EDIT_VW_lowres.mtl";
         UI.progressMax = 30;
@@ -79,13 +80,11 @@ public class MuseumGenerator : MonoBehaviour
             for(int j = 0; j <20; j++)
             {
                 //UI.progressMax++;
-                Debug.Log("entering Loading new Object");
                 int i = 0;
                 foreach (string directory in System.IO.Directory.GetDirectories("C:\\Users\\Krohm\\Documents\\Uni\\Masterarbeit\\NHMV Models\\temp\\obj\\"))
                 {
                     if (i < counter)
                     {
-                        Debug.Log("inc i");
                         i++;
                         continue;
                     }
@@ -94,7 +93,6 @@ public class MuseumGenerator : MonoBehaviour
                     objPath_material = string.Empty;
                     objPath_xml = string.Empty;
 
-                    Debug.Log("Loading new Object");
                     foreach (string file in System.IO.Directory.GetFiles(directory))
                     {
                         extension = file.Split(".")[1];
@@ -117,7 +115,6 @@ public class MuseumGenerator : MonoBehaviour
                         {
                             row++;
                         }
-                        Debug.Log("inc counter and break");
                         counter++;
                         break;
                     }
@@ -128,13 +125,11 @@ public class MuseumGenerator : MonoBehaviour
         if (PlayerInRange && Input.GetKeyDown(KeyCode.E))
         {
             //UI.progressMax++;
-            Debug.Log("entering Loading new Object");
             int i = 0;
             foreach (string directory in System.IO.Directory.GetDirectories("C:\\Users\\Krohm\\Documents\\Uni\\Masterarbeit\\NHMV Models\\temp\\obj\\"))
             {
                 if (i < counter)
                 {
-                    Debug.Log("inc i");
                     i++;
                     continue;
                 }
@@ -143,7 +138,6 @@ public class MuseumGenerator : MonoBehaviour
                 objPath_material = string.Empty;
                 objPath_xml = string.Empty;
 
-                Debug.Log("Loading new Object");
                 foreach (string file in System.IO.Directory.GetFiles(directory))
                 {
                     extension = file.Split(".")[1];
@@ -166,7 +160,6 @@ public class MuseumGenerator : MonoBehaviour
                     {
                         row++;
                     }
-                    Debug.Log("inc counter and break");
                     counter++;
                     break;
                 }
@@ -205,6 +198,17 @@ public class MuseumGenerator : MonoBehaviour
 
         GameObject childGameObject;
         MeshRenderer childGameObjectRenderer;
+        string loadedObjectName = "";
+        string loadedObjectDesciption = "";
+
+        if (xmlPath != "")
+        {
+            XDocument document = XDocument.Load(xmlPath);
+            XElement nameXML = document.Element("Object").Element("Name"); 
+            loadedObjectName = nameXML.Value;
+            XElement descriptionXML = document.Element("Object").Element("Description");
+            loadedObjectDesciption = descriptionXML.Value;
+        }
 
         for (int child = 0; child < loadedObject.transform.childCount; child++)
         {
@@ -217,15 +221,14 @@ public class MuseumGenerator : MonoBehaviour
             childGameObject.layer = 6;
            
             InspectorObjectController inspectorObjectController = childGameObject.AddComponent<InspectorObjectController>();
-            inspectorObjectController.objectName = childGameObject.gameObject.name;
             inspectorObjectController.inspectController = inspectController;
+            inspectorObjectController.extraInfo = loadedObjectDesciption;
 
-            if (xmlPath != "")
-            {
-                XDocument document = XDocument.Load(xmlPath);
-                XElement description = document.Element("Description");
-                inspectorObjectController.extraInfo = description.Value;
-            }
+            if(loadedObjectName != "")
+                inspectorObjectController.objectName = loadedObjectName;
+            else
+                inspectorObjectController.objectName = childGameObject.gameObject.name;
+
         }
     }
 

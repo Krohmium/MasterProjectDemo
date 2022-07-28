@@ -65,9 +65,10 @@ public class ExhibitObject : MonoBehaviour
         else if(!this.gameObject.transform.name.EndsWith("(Clone)"))
         {
             GameObject parent_ = this.gameObject.transform.parent.gameObject;
-            GameObject podest_ = GameObject.Find("template/podest");
+            Debug.Log("Building ExhibitObject: " + parent_.gameObject.name);
+            GameObject podest_ = GameObject.FindWithTag("TemplatePodest");
             GameObject exhibitPodest_ = GameObject.Instantiate(podest_);
-            
+            exhibitPodest_.tag = "Podest";
 
             exhibitPodest_.transform.SetParent(parent_.transform, true);
             exhibitPodest_.transform.position = parent_.transform.position;
