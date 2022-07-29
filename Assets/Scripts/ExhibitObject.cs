@@ -22,15 +22,15 @@ public class ExhibitObject : MonoBehaviour
     private double closeUpZoomFactor = 1.0d;
 
     public float x, y, z;
-    public float w_x, w_y, w_z;
+    public float b_x, b_y, b_z;
 
     void Start()
     {
+        Vector3 boundssize = GetComponent<Renderer>().localBounds.size;
         if (!this.gameObject.transform.name.EndsWith("(Clone)"))
         {
             Mesh mesh = GetComponent<MeshFilter>().sharedMesh;
             CalculateMeshVolume(mesh);
-            Vector3 boundssize = GetComponent<Renderer>().localBounds.size;
 
             x = boundssize.x;
             y = boundssize.y;
@@ -56,71 +56,58 @@ public class ExhibitObject : MonoBehaviour
             Destroy(colids[(minCollider + 1) % 3]);
             Destroy(colids[(minCollider + 2) % 3]);
 
-            capColl = colids[minCollider];
-        }
+            capColl = colids[minCollider]; 
+            
+            boundssize = GetComponent<Renderer>().bounds.size;
 
-        if (colliderVolume[minCollider] > 26158062)
-        {
-            Debug.Log("big collider"); 
-            if (capColl.direction == 0)
+            b_x = boundssize.x;
+            b_y = boundssize.y;
+            b_z = boundssize.z;
+
+            if (colliderVolume[minCollider] > 26158062)
             {
-                this.gameObject.transform.position += new Vector3(this.gameObject.transform.position.x, -capColl.center.z / 100 + capColl.radius / 100f, -(30f+ this.gameObject.transform.position.z*2));
+                this.gameObject.transform.position += new Vector3(this.gameObject.transform.position.x, -capColl.center.z / 100 + b_y / 2, -(30f + this.gameObject.transform.position.z * 2));
+                Debug.Log("big collider");
+
+                if (colliderVolume[minCollider] > x * y * z)
+                {
+                    BoxCollider boxCol = this.gameObject.AddComponent<BoxCollider>();
+                    Destroy(capColl);
+                }
             }
-
-            if (capColl.direction == 1)
+            else
             {
-                this.gameObject.transform.position += new Vector3(this.gameObject.transform.position.x, -capColl.center.z / 100 + capColl.radius / 100f, -(30f + this.gameObject.transform.position.z * 2));
-            }
 
-            if (capColl.direction == 2)
-            {
-                this.gameObject.transform.position += new Vector3(this.gameObject.transform.position.x, -capColl.center.z / 100 + capColl.height / 200f, -(30f + this.gameObject.transform.position.z * 2));
-            }
-            //Destroy(capColl);
 
-        }
-        else if(!this.gameObject.transform.name.EndsWith("(Clone)"))
-        {
-            GameObject parent_ = this.gameObject.transform.parent.gameObject;
-            Debug.Log("Building ExhibitObject: " + parent_.gameObject.name);
-            GameObject podest_ = GameObject.FindWithTag("TemplatePodest");
-            GameObject exhibitPodest_ = GameObject.Instantiate(podest_);
-            exhibitPodest_.tag = "Podest";
+                GameObject parent_ = this.gameObject.transform.parent.gameObject;
+                Debug.Log("Building ExhibitObject: " + parent_.gameObject.name);
+                GameObject podest_ = GameObject.FindWithTag("TemplatePodest");
+                GameObject exhibitPodest_ = GameObject.Instantiate(podest_);
+                exhibitPodest_.tag = "Podest";
 
-            exhibitPodest_.transform.SetParent(parent_.transform, true);
-            exhibitPodest_.transform.position = parent_.transform.position;
-
-            if (capColl.direction == 0)
-            {
+                exhibitPodest_.transform.SetParent(parent_.transform, true);
+                exhibitPodest_.transform.position = parent_.transform.position;
                 exhibitPodest_.transform.position += new Vector3(capColl.center.x / 100, 0, capColl.center.y / 100);
                 exhibitPodest_.transform.position += new Vector3(0, 0.30f, 0f);
 
-                this.gameObject.transform.position += new Vector3(0, -capColl.center.z / 100 + capColl.radius / 100f + 1.15f, 0f);
+                this.gameObject.transform.position += new Vector3(0, -capColl.center.z / 100 + b_y / 2 + 1.15f, 0f);
 
-                exhibitPodest_.transform.localScale = new Vector3(-capColl.height - 20, -15f, -capColl.radius * 2 - 20);
-            }
+                if (capColl.direction == 0)
+                {
+                    exhibitPodest_.transform.localScale = new Vector3(-capColl.height - 20, -15f, -capColl.radius * 2 - 20);
+                }
 
-            if (capColl.direction == 1)
-            {
-                exhibitPodest_.transform.position += new Vector3(capColl.center.x / 100, 0, capColl.center.y / 100);
-                exhibitPodest_.transform.position += new Vector3(0, 0.30f, 0f);
+                if (capColl.direction == 1)
+                {
+                    exhibitPodest_.transform.localScale = new Vector3(-capColl.radius * 2 - 20, -15f, -capColl.height - 20);
+                }
 
-                this.gameObject.transform.position += new Vector3(0, -capColl.center.z / 100 + capColl.radius / 100f + 1.15f, 0f);
-
-                exhibitPodest_.transform.localScale = new Vector3(-capColl.radius * 2 - 20, -15f, -capColl.height - 20);
-            }
-
-            if (capColl.direction == 2)
-            {
-                exhibitPodest_.transform.position += new Vector3(capColl.center.x / 100, 0, capColl.center.y / 100);
-                exhibitPodest_.transform.position += new Vector3(0, 0.30f, 0f);
-
-                this.gameObject.transform.position += new Vector3(0, -capColl.center.z / 100 + capColl.height / 200f + 1.15f, 0f);
-
-                exhibitPodest_.transform.localScale = new Vector3(-capColl.radius * 2 - 20, -15f, -capColl.radius * 2 - 20);
+                if (capColl.direction == 2)
+                {
+                    exhibitPodest_.transform.localScale = new Vector3(-capColl.radius * 2 - 20, -15f, -capColl.radius * 2 - 20);
+                }
             }
         }
-
     }
 
     // Start is called before the first frame update
@@ -172,7 +159,8 @@ public class ExhibitObject : MonoBehaviour
         float scale = - Screen.height / xyz.Max(); // objects need to be inverted
         originalLocalScale = new Vector3(scale, scale, scale);
         this.transform.localScale = originalLocalScale;
-        this.transform.localPosition = GetComponent<CapsuleCollider>().center * -scale;
+        Vector3 collCenter = GetComponent<CapsuleCollider>() != null ? GetComponent<CapsuleCollider>().center : GetComponent<BoxCollider>().center;
+        this.transform.localPosition = collCenter * -scale;
         closeUpActive = true;
     }
 

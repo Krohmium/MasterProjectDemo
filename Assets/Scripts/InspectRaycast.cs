@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class InspectRaycast : MonoBehaviour
 {
-    [SerializeField] private int rayLength = 5;
+    [SerializeField] private int rayLength = 25;
     [SerializeField] private LayerMask layerMaskInteract;
     private InspectorObjectController raycastedObj;
 
@@ -38,8 +38,8 @@ public class InspectRaycast : MonoBehaviour
     {
         RaycastHit hit;
         Vector3 fwd = transform.TransformDirection(Vector3.forward);
-
-        if(!closeUpActive && Physics.Raycast(transform.position, fwd, out hit, rayLength, layerMaskInteract.value))
+        Debug.DrawLine(transform.position, fwd*rayLength);
+        if (!closeUpActive && Physics.Raycast(transform.position, fwd*rayLength, out hit, rayLength, layerMaskInteract.value))
         {
             if(hit.collider.CompareTag("ExhibitObject"))
             {
