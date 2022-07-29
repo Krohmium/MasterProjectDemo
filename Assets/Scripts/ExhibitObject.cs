@@ -22,6 +22,7 @@ public class ExhibitObject : MonoBehaviour
     private double closeUpZoomFactor = 1.0d;
 
     public float x, y, z;
+    public float w_x, w_y, w_z;
 
     void Start()
     {
@@ -29,8 +30,8 @@ public class ExhibitObject : MonoBehaviour
         {
             Mesh mesh = GetComponent<MeshFilter>().sharedMesh;
             CalculateMeshVolume(mesh);
-
             Vector3 boundssize = GetComponent<Renderer>().localBounds.size;
+
             x = boundssize.x;
             y = boundssize.y;
             z = boundssize.z;
@@ -60,7 +61,23 @@ public class ExhibitObject : MonoBehaviour
 
         if (colliderVolume[minCollider] > 26158062)
         {
-            Destroy(this.gameObject);
+            Debug.Log("big collider"); 
+            if (capColl.direction == 0)
+            {
+                this.gameObject.transform.position += new Vector3(this.gameObject.transform.position.x, -capColl.center.z / 100 + capColl.radius / 100f, -(30f+ this.gameObject.transform.position.z*2));
+            }
+
+            if (capColl.direction == 1)
+            {
+                this.gameObject.transform.position += new Vector3(this.gameObject.transform.position.x, -capColl.center.z / 100 + capColl.radius / 100f, -(30f + this.gameObject.transform.position.z * 2));
+            }
+
+            if (capColl.direction == 2)
+            {
+                this.gameObject.transform.position += new Vector3(this.gameObject.transform.position.x, -capColl.center.z / 100 + capColl.height / 200f, -(30f + this.gameObject.transform.position.z * 2));
+            }
+            //Destroy(capColl);
+
         }
         else if(!this.gameObject.transform.name.EndsWith("(Clone)"))
         {
@@ -178,7 +195,7 @@ public class ExhibitObject : MonoBehaviour
 
     private double CalculateCapsuleVolume(CapsuleCollider collider)
     {
-        return Math.Abs(Math.PI * collider.radius * collider.radius * ((4/3) * collider.radius + collider.height - collider.radius*2));
+        return Math.Abs(Math.PI * collider.radius * collider.radius * ((4/3) * collider.radius + Math.Max(0f, collider.height - collider.radius*2)));
     }
 
     private void CalculateMeshVolume(Mesh mesh)

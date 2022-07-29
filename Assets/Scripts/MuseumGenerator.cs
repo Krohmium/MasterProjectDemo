@@ -26,7 +26,8 @@ public class MuseumGenerator : MonoBehaviour
     int counter = 0;
     int row = 0;
 
-    int[] skiplist = new int[16] {0,3,4,5,6,7,10,11,15,16,17,19,20,21,29,30 }; 
+    //int[] skiplist = new int[16] {0,3,4,5,6,7,10,11,15,16,17,19,20,21,29,30 }; 
+    int[] skiplist = new int[0]; 
 
 
 
@@ -122,7 +123,7 @@ public class MuseumGenerator : MonoBehaviour
             }
         }
 
-        if (PlayerInRange && Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.E))
         {
             //UI.progressMax++;
             int i = 0;
