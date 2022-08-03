@@ -38,8 +38,7 @@ public class InspectRaycast : MonoBehaviour
     {
         RaycastHit hit;
         Vector3 fwd = transform.TransformDirection(Vector3.forward);
-        Debug.DrawLine(transform.position, fwd*rayLength);
-        if (!closeUpActive && Physics.Raycast(transform.position, fwd*rayLength, out hit, rayLength, layerMaskInteract.value))
+        if (!closeUpActive && Physics.Raycast(transform.position, fwd, out hit, rayLength, layerMaskInteract.value))
         {
             if(hit.collider.CompareTag("ExhibitObject"))
             {
