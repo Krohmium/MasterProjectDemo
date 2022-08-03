@@ -11,6 +11,7 @@ public class ExhibitObject : MonoBehaviour
     public float meshVolume = 0;
     public double[] colliderVolume = new double[3];
     public double verticeAmount = 0;
+    public bool isBig = false;
     private CapsuleCollider capColl;
     private int minCollider;
 
@@ -66,7 +67,9 @@ public class ExhibitObject : MonoBehaviour
 
             if (colliderVolume[minCollider] > 26158062)
             {
-                this.gameObject.transform.position += new Vector3(this.gameObject.transform.position.x, -capColl.center.z / 100 + b_y / 2, -(30f + this.gameObject.transform.position.z * 2));
+                isBig = true;
+                //this.gameObject.transform.position += new Vector3(this.gameObject.transform.position.x, -capColl.center.z / 100 + b_y / 2, -(30f + this.gameObject.transform.position.z * 2));
+                this.gameObject.transform.position += new Vector3(this.gameObject.transform.position.x, -capColl.center.z / 100 + b_y / 2, this.gameObject.transform.position.z);
                 Debug.Log("big collider");
 
                 if (colliderVolume[minCollider] > x * y * z)
@@ -84,13 +87,14 @@ public class ExhibitObject : MonoBehaviour
                 GameObject podest_ = GameObject.FindWithTag("TemplatePodest");
                 GameObject exhibitPodest_ = GameObject.Instantiate(podest_);
                 exhibitPodest_.tag = "Podest";
+                this.gameObject.transform.position += new Vector3(0, -capColl.center.z / 100 + b_y / 2 + 1.15f, 0f);
 
-                exhibitPodest_.transform.SetParent(parent_.transform, true);
+                exhibitPodest_.transform.SetParent(this.gameObject.transform, false);
                 exhibitPodest_.transform.position = parent_.transform.position;
                 exhibitPodest_.transform.position += new Vector3(capColl.center.x / 100, 0, capColl.center.y / 100);
-                exhibitPodest_.transform.position += new Vector3(0, 0.30f, 0f);
+                exhibitPodest_.transform.position += new Vector3(0, 0.3f, 0f);
 
-                this.gameObject.transform.position += new Vector3(0, -capColl.center.z / 100 + b_y / 2 + 1.15f, 0f);
+                exhibitPodest_.transform.Rotate(new Vector3(90f, 0f, 0f));
 
                 if (capColl.direction == 0)
                 {
