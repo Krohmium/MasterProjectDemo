@@ -11,6 +11,7 @@ public class movement : MonoBehaviour
     public bool groundedPlayer;
     public float gravityValue = -0.981f;
     public float velocity = 0f;
+    public bool freeze;
     public Vector3 velocityVector = new Vector3(0, 0, 0);
     // Start is called before the first frame update
     void Start()
@@ -26,20 +27,6 @@ public class movement : MonoBehaviour
         // player movement - forward, backward, left, right
         float horizontal = Input.GetAxis("Horizontal") * playerSpeed;
         float vertical = Input.GetAxis("Vertical") * playerSpeed;
-        controller.Move((transform.right * horizontal + transform.forward * vertical) * Time.deltaTime);
-
-        //velocityVector.x +=  horizontal;
-        //velocityVector.z += vertical;
-
-        //if(velocityVector.x >0)
-        //    velocityVector.x -= playerSpeed/2;
-        //else
-        //    velocityVector.x += playerSpeed / 2;
-
-        //if(velocityVector.z >0)
-        //    velocityVector.z -= playerSpeed/2;
-        //else
-        //    velocityVector.z += playerSpeed / 2;
 
         // Gravity
         if (groundedPlayer)
@@ -57,7 +44,11 @@ public class movement : MonoBehaviour
             //Debug.Log("Horizontal  " + velocityVector.y);
         }
 
-        controller.Move(velocityVector);
+        if(!freeze)
+        {
+            controller.Move((transform.right * horizontal + transform.forward * vertical) * Time.deltaTime);
+            controller.Move(velocityVector);
+        }
     }
 }
 
