@@ -44,10 +44,10 @@ public class InspectRaycast : MonoBehaviour
             {
                 if(!doOnce)
                 {
-                    raycastedObj = hit.collider.gameObject.GetComponent<InspectorObjectController>();
-                    raycastedObj.ShowObjectName();
                     CrosshairChange(true);
                 }
+                raycastedObj = hit.collider.gameObject.GetComponent<InspectorObjectController>();
+                raycastedObj.ShowObjectName();
                 isCrosshairActive = true;
                 doOnce = true;
 
