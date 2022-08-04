@@ -53,8 +53,16 @@ public class InspectRaycast : MonoBehaviour
 
                 if(Input.GetKeyDown(KeyCode.I))
                 {
-                    raycastedObj.ShowExtraInfo();
-                    extraInfoActive = true;
+                    if (!extraInfoActive)
+                    {
+                        raycastedObj.ShowExtraInfo();
+                        extraInfoActive = true;
+                    }
+                    else
+                    {
+                        raycastedObj.HideExtraInfo();
+                        extraInfoActive = false;
+                    }
                 }
                 else if(Input.GetKeyDown(KeyCode.C))
                 {
