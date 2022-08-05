@@ -83,7 +83,7 @@ public class MuseumGenerator : MonoBehaviour
             reOrderObjects();
             loadedObjectSize = loadedObjects.Count;
         }
-        if (Input.GetKeyDown(KeyCode.M) && Input.GetKey(KeyCode.LeftControl))
+        if ((Input.GetKeyDown(KeyCode.M) && Input.GetKey(KeyCode.LeftControl)) || (Input.GetKeyDown(KeyCode.M) && Input.GetKey(KeyCode.RightControl)))
         {
             for(int j = 0; j <20; j++)
             {
@@ -130,7 +130,7 @@ public class MuseumGenerator : MonoBehaviour
             }
         }
 
-        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.E))
+        if ((Input.GetKeyDown(KeyCode.E) && Input.GetKey(KeyCode.LeftControl)) || (Input.GetKeyDown(KeyCode.E) && Input.GetKey(KeyCode.RightControl)))
         {
             //UI.progressMax++;
             int i = 0;
