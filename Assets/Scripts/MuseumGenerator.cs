@@ -10,7 +10,8 @@ using System;
 public class MuseumGenerator : MonoBehaviour
 {
     public UIController UI;
-
+    
+    string objLoadingPath = "C:\\Users\\Krohm\\Documents\\Uni\\Masterarbeit\\NHMV Models\\temp\\obj\\";
     string objPath = string.Empty;
     string objPath_material = string.Empty;
     string objPath_xml = string.Empty;
@@ -23,10 +24,10 @@ public class MuseumGenerator : MonoBehaviour
     int loadedObjectSize = 0;
     protected bool PlayerInRange;
 
+
     [SerializeField] InspectController inspectController;
 
     int counter = 0;
-    int row = 0;
 
     //int[] skiplist = new int[16] {0,3,4,5,6,7,10,11,15,16,17,19,20,21,29,30 }; 
     int[] skiplist = new int[0]; 
@@ -40,7 +41,7 @@ public class MuseumGenerator : MonoBehaviour
         objPath = "C:\\Users\\Krohm\\Documents\\Uni\\Masterarbeit\\NHMV Models\\temp\\obj\\figure-holding-the-hraschina-meteorite\\Karyatide_Hraschina_Saal4_EDIT_VW_lowres.obj";
         objPath_material = "C:\\Users\\Krohm\\Documents\\Uni\\Masterarbeit\\NHMV Models\\temp\\obj\\figure-holding-the-hraschina-meteorite\\Karyatide_Hraschina_Saal4_EDIT_VW_lowres.mtl";
         UI.progressMax = 30;
-        foreach (string directory in System.IO.Directory.GetDirectories("C:\\Users\\Krohm\\Documents\\Uni\\Masterarbeit\\NHMV Models\\temp\\obj\\"))
+        foreach (string directory in System.IO.Directory.GetDirectories(objLoadingPath))
         {
             UI.progressCurrent = counter;
             if (counter > 2)
@@ -65,10 +66,6 @@ public class MuseumGenerator : MonoBehaviour
             loadObjectToScene(objPath, objPath_material, objPath_xml);
 
             counter++;
-            if (counter % 8 == 0)
-            {
-                row++;
-            }
         }
 
     }
@@ -85,11 +82,11 @@ public class MuseumGenerator : MonoBehaviour
         }
         if ((Input.GetKeyDown(KeyCode.M) && Input.GetKey(KeyCode.LeftControl)) || (Input.GetKeyDown(KeyCode.M) && Input.GetKey(KeyCode.RightControl)))
         {
-            for(int j = 0; j <20; j++)
+            for (int j = 0; j < 20; j++)
             {
                 //UI.progressMax++;
                 int i = 0;
-                foreach (string directory in System.IO.Directory.GetDirectories("C:\\Users\\Krohm\\Documents\\Uni\\Masterarbeit\\NHMV Models\\temp\\obj\\"))
+                foreach (string directory in System.IO.Directory.GetDirectories(objLoadingPath))
                 {
                     if (i < counter)
                     {
@@ -119,22 +116,17 @@ public class MuseumGenerator : MonoBehaviour
 
                     if (counter == i)
                     {
-                        if (counter % 8 == 0)
-                        {
-                            row++;
-                        }
                         counter++;
                         break;
                     }
                 }
             }
         }
-
-        if ((Input.GetKeyDown(KeyCode.E) && Input.GetKey(KeyCode.LeftControl)) || (Input.GetKeyDown(KeyCode.E) && Input.GetKey(KeyCode.RightControl)))
+        else if ((Input.GetKeyDown(KeyCode.E) && Input.GetKey(KeyCode.LeftControl)) || (Input.GetKeyDown(KeyCode.E) && Input.GetKey(KeyCode.RightControl)))
         {
             //UI.progressMax++;
             int i = 0;
-            foreach (string directory in System.IO.Directory.GetDirectories("C:\\Users\\Krohm\\Documents\\Uni\\Masterarbeit\\NHMV Models\\temp\\obj\\"))
+            foreach (string directory in System.IO.Directory.GetDirectories(objLoadingPath))
             {
                 if (i < counter)
                 {
@@ -163,15 +155,15 @@ public class MuseumGenerator : MonoBehaviour
                 loadObjectToScene(objPath, objPath_material, objPath_xml);
 
                 if (counter == i)
-                {   
-                    if (counter%8==0)
-                    {
-                        row++;
-                    }
+                {
                     counter++;
                     break;
                 }
             }
+        }
+        else if ((Input.GetKeyDown(KeyCode.L) && Input.GetKey(KeyCode.LeftControl)) || (Input.GetKeyDown(KeyCode.L) && Input.GetKey(KeyCode.RightControl)))
+        {
+            objLoadingPath = EditorUtility.OpenFolderPanel("Select Directory", "", "");
         }
     }
     protected void reOrderObjects()

@@ -131,9 +131,16 @@ public class ExhibitObject : MonoBehaviour
             float mouseX = Input.GetAxis("Mouse X") * 2.0f;
             float mouseY = Input.GetAxis("Mouse Y") * 2.0f;
 
+            if (Input.GetMouseButton(1))
+            {
+                this.gameObject.transform.parent.transform.localPosition = new Vector3(0,0,0);
+                yRotation = 0;
+                xRotation = 0;
+                closeUpZoomFactor = 1;
+            }
             if (Input.GetMouseButton(0))
             {
-                this.gameObject.transform.parent.transform.localPosition += Input.mousePosition-lastMousePosition;
+                this.gameObject.transform.parent.transform.localPosition += Input.mousePosition - lastMousePosition;
 
             }
             else

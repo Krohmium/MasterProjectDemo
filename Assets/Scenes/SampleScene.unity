@@ -1811,11 +1811,12 @@ MonoBehaviour:
     (needs to be in range)\n[B]\t\t\tchange background setting\n[Esc]\t\t\tclose
     close-up\n[+][-]\t\t\tchange font size of the user interface\n[Ctrl]+[E]\tload
     1 further object into the scene\n[Ctrl]+[M]\tload 10 further object into the
-    scene\n\nBeing in range is visualized by the center dot changing from white to
-    red and the exhibition object's name being displayed on top.\n\nWhile being in
-    the close-up view you can rotate the object by moving the mouse. By holding the
-    left mouse button while moving the mouse you canr reposition the object. With
-    the scroll wheel you can zoom in and out."
+    scene\n[Ctrl]+[L]\tselect directory to load the .obj files from\n\nBeing in range
+    is visualized by the center dot changing from white to red and the exhibition
+    object's name being displayed on top.\n\nWhile being in the close-up view you
+    can rotate the object by moving the mouse. By holding the left mouse button while
+    moving the mouse you canr reposition the object. With the scroll wheel you can
+    zoom in and out."
 --- !u!222 &641369609
 CanvasRenderer:
   m_ObjectHideFlags: 0
