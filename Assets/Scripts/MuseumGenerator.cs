@@ -6,6 +6,8 @@ using UnityEditor;
 using System.IO;
 using System.Xml.Linq;
 using System;
+using SimpleFileBrowser;
+using SFB;
 
 public class MuseumGenerator : MonoBehaviour
 {
@@ -163,7 +165,47 @@ public class MuseumGenerator : MonoBehaviour
         }
         else if ((Input.GetKeyDown(KeyCode.L) && Input.GetKey(KeyCode.LeftControl)) || (Input.GetKeyDown(KeyCode.L) && Input.GetKey(KeyCode.RightControl)))
         {
-            objLoadingPath = EditorUtility.OpenFolderPanel("Select Directory", "", "");
+
+            //var paths = StandaloneFileBrowser.OpenFilePanelOpenFilePanel("Open File", "", "", false);
+            Cursor.visible = true;
+            var paths = StandaloneFileBrowser.OpenFolderPanel("Select .obj directory", "C:\\Users\\Krohm\\Documents\\Uni\\Masterarbeit\\NHMV Models\\temp\\obj\\", false);
+
+            objLoadingPath = paths[0];
+
+            //FileBrowser.AddQuickLink("NHM Objects", "C:\\Users\\Krohm\\Documents\\Uni\\Masterarbeit\\NHMV Models\\temp\\obj\\", null);
+
+
+            //StartCoroutine(ShowLoadDialogCoroutine());
+            Cursor.visible = false;
+
+            //if (FileBrowser.Success)
+            //{
+            //    objLoadingPath = FileBrowser.Result[0];
+            //}
+        }
+    }
+
+    IEnumerator ShowLoadDialogCoroutine()
+    {
+        // Show a load file dialog and wait for a response from user
+        // Load file/folder: both, Allow multiple selection: true
+        // Initial path: default (Documents), Initial filename: empty
+        // Title: "Load File", Submit button text: "Load"
+        yield return FileBrowser.WaitForLoadDialog(FileBrowser.PickMode.Folders, false, null, null, "Load Files and Folders", "Load");
+
+        // Dialog is closed
+        // Print whether the user has selected some files/folders or cancelled the operation (FileBrowser.Success)
+        Debug.Log(FileBrowser.Success);
+
+        if (FileBrowser.Success)
+        {
+            // Print paths of the selected files (FileBrowser.Result) (null, if FileBrowser.Success is false)
+            for (int i = 0; i < FileBrowser.Result.Length; i++)
+                Debug.Log(FileBrowser.Result[i]);
+
+            // Read the bytes of the first file via FileBrowserHelpers
+            // Contrary to File.ReadAllBytes, this function works on Android 10+, as well
+
         }
     }
     protected void reOrderObjects()
