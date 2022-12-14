@@ -48,13 +48,25 @@ public class InspectRaycast : MonoBehaviour
                 }
                 raycastedObj = hit.collider.gameObject.GetComponent<InspectorObjectController>();
                 raycastedObj.ShowObjectName();
+
+                if (extraInfoActive)
+                    raycastedObj.ShowExtraInfo();
+                
                 isCrosshairActive = true;
                 doOnce = true;
 
                 if(Input.GetKeyDown(KeyCode.I))
                 {
-                    raycastedObj.ShowExtraInfo();
-                    extraInfoActive = true;
+                    if (!extraInfoActive)
+                    {
+                        raycastedObj.ShowExtraInfo();
+                        extraInfoActive = true;
+                    }
+                    else
+                    {
+                        raycastedObj.HideExtraInfo();
+                        extraInfoActive = false;
+                    }
                 }
                 else if(Input.GetKeyDown(KeyCode.C))
                 {
@@ -84,12 +96,13 @@ public class InspectRaycast : MonoBehaviour
                 raycastedObj.HideObjectName();
                 CrosshairChange(false);
                 doOnce = false;
-
-                if (extraInfoActive)
-                {
-                    raycastedObj.HideExtraInfo();
-                    extraInfoActive = false;
-                }
+            }
+            if (extraInfoActive)
+            {
+                raycastedObj.HideExtraInfo();
+                extraInfoActive = false;
+                CrosshairChange(false);
+                doOnce = false;
             }
         } 
 
