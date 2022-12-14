@@ -5,6 +5,7 @@ using Dummiesman;
 using UnityEditor;
 using System.IO;
 using System.Xml.Linq;
+using System;
 
 public class MuseumGenerator : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class MuseumGenerator : MonoBehaviour
     GameObject loadedObject;
     BoxCollider tempCollider;
     List<GameObject> loadedObjects = new List<GameObject>();
+    int loadedObjectSize = 0;
     protected bool PlayerInRange;
 
     [SerializeField] InspectController inspectController;
@@ -76,7 +78,12 @@ public class MuseumGenerator : MonoBehaviour
 
     protected void Update()
     {
-        if(Input.GetKeyDown(KeyCode.M) && Input.GetKey(KeyCode.LeftControl))
+        //if (loadedObjectSize < loadedObjects.Count)
+        {
+            reOrderObjects();
+            loadedObjectSize = loadedObjects.Count;
+        }
+        if (Input.GetKeyDown(KeyCode.M) && Input.GetKey(KeyCode.LeftControl))
         {
             for(int j = 0; j <20; j++)
             {
@@ -167,7 +174,48 @@ public class MuseumGenerator : MonoBehaviour
             }
         }
     }
+    protected void reOrderObjects()
+    {
+        List<GameObject> loadedSmallObjects = new List<GameObject>();
+        List<GameObject> loadedBigObjects = new List<GameObject>();
 
+        foreach (GameObject loadedObject in loadedObjects)
+        { 
+            bool allObjectsSmall = true;
+            for (int child = 0; child < loadedObject.transform.childCount; child++)
+            {
+                if (loadedObject.transform.GetChild(child).gameObject.GetComponent<ExhibitObject>().isBig)
+                    allObjectsSmall = false;
+            }
+            if (allObjectsSmall)
+                loadedSmallObjects.Add(loadedObject);
+            else
+                loadedBigObjects.Add(loadedObject);
+        }
+
+        int smallRowColLength = (int)Math.Ceiling(Math.Sqrt(loadedSmallObjects.Count));
+        int smallCounter = 0;
+        for (int i = 0; i < smallRowColLength && smallCounter < loadedSmallObjects.Count; i++)
+        {
+            for (int j = 0; j < smallRowColLength && smallCounter < loadedSmallObjects.Count; j++)
+            {
+                loadedSmallObjects[smallCounter].transform.position = new Vector3(-smallRowColLength/2 * 10f + i * 10f, 0, -smallRowColLength / 2 * 10f + j * 10f);
+                smallCounter++;
+            }
+        }
+        int bigRowColLength = smallRowColLength + 2;
+        int bigCounter = 0;
+        for (int i = 0; i < bigRowColLength && bigCounter < loadedBigObjects.Count; i++)
+        {
+            for (int j = 0; j < bigRowColLength && bigCounter < loadedBigObjects.Count; j++)
+            {   if (i < 1 || j < 1 || i > smallRowColLength || j > smallRowColLength)
+                {
+                    loadedBigObjects[bigCounter].transform.position = new Vector3(-bigRowColLength / 2 * 10f + i * 15f -5f, 0, -bigRowColLength / 2 * 10f + j * 15f-5f);
+                    bigCounter++;
+                }    
+            }
+        }
+    }
     protected void OnTriggerEnter(Collider otherCollider)
     {
         if (otherCollider.CompareTag("Player"))
@@ -194,7 +242,7 @@ public class MuseumGenerator : MonoBehaviour
         loadedObject = new OBJLoader().Load(objectPath, materialPath);
 
         loadedObject.transform.localScale = new Vector3(-0.01f, -0.01f, -0.01f);
-        loadedObject.transform.position = new Vector3(-40.0f + counter % 8 * 10.0f, 0, 10.0f + counter / 8 * 10.0f);
+        //loadedObject.transform.position = new Vector3(-40.0f + counter % 8 * 10.0f, 0, 10.0f + counter / 8 * 10.0f);
         loadedObject.transform.Rotate(new Vector3(90.0f, 180.0f, 0.0f));
 
         GameObject childGameObject;
@@ -210,7 +258,6 @@ public class MuseumGenerator : MonoBehaviour
             XElement descriptionXML = document.Element("Object").Element("Description");
             loadedObjectDesciption = descriptionXML.Value;
         }
-
         for (int child = 0; child < loadedObject.transform.childCount; child++)
         {
             childGameObject = loadedObject.transform.GetChild(child).gameObject;
@@ -229,8 +276,8 @@ public class MuseumGenerator : MonoBehaviour
                 inspectorObjectController.objectName = loadedObjectName;
             else
                 inspectorObjectController.objectName = childGameObject.gameObject.name;
-
         }
+        loadedObjects.Add(loadedObject);
     }
 
 }
